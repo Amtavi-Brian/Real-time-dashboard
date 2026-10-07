@@ -21,6 +21,16 @@ Open the local URL printed by Vite. In mock mode, sign in with one of these acco
 
 The role is assigned by authentication and cannot be selected on the login form. Settings is available only to ADMIN and HR_MANAGER.
 
+## Workspace Permissions
+
+| Role | Workspace access |
+| --- | --- |
+| `ADMIN` | Full workspace: employees, attendance, overtime, leave, payroll, departments, analytics, reports, alerts, and settings. |
+| `HR_MANAGER` | HR operations: employees, attendance, overtime, leave, payroll, departments, analytics, reports, alerts, and settings. |
+| `MANAGER` | Team workspace: attendance, overtime, leave, and alerts. The dashboard shows team-level attendance/overtime indicators and department alerts; payroll, workforce-wide employee data, analytics, reports, and settings are unavailable. |
+
+The frontend hides unavailable links and guards direct route access using the authenticated role. These UI checks are not a security boundary; the backend must enforce permissions and scope manager data to the authenticated manager's department.
+
 ## Environment
 
 Copy `.env.example` to `.env` and set the backend URLs when connecting to FastAPI:
