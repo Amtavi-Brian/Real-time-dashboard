@@ -1,0 +1,13 @@
+id,name,department,title,status,start_date,salary,email,attendance_rate,working_hours,overtime_hours
+EMP-1042,Amara Osei,Operations,Shift Supervisor,Active,2022-03-14,78500,amara.osei@columbus.co.gh,98.2,40,12
+EMP-1038,Kwame Mensah,Technology,Systems Analyst,Active,2021-11-08,92000,kwame.mensah@columbus.co.gh,94.6,42,21
+EMP-1026,Nana Boateng,Finance,Payroll Officer,Active,2023-01-16,68500,nana.boateng@columbus.co.gh,96.1,38,4
+EMP-1019,Akosua Owusu,Human Resources,HR Partner,On leave,2020-06-22,81000,akosua.owusu@columbus.co.gh,97.9,39,6
+EMP-1014,Kofi Addo,Sales & Marketing,Account Executive,Active,2022-09-05,74500,kofi.addo@columbus.co.gh,91.8,37,18
+EMP-1008,Esi Mensima,Operations,Quality Lead,Active,2019-02-11,83500,esi.mensima@columbus.co.gh,98.7,41,14
+EMP-1003,Yaw Asante,Technology,Product Designer,Active,2024-02-19,88000,yaw.asante@columbus.co.gh,95.3,44,27
+EMP-0997,Abena Kusi,Finance,Financial Analyst,Active,2021-04-12,72000,abena.kusi@columbus.co.gh,96.8,39,5
+EMP-0986,Kojo Arthur,Operations,Logistics Coordinator,On leave,2020-10-01,61200,kojo.arthur@columbus.co.gh,92.4,36,3
+EMP-0974,Efua Darko,Sales & Marketing,Brand Manager,Active,2018-08-27,96500,efua.darko@columbus.co.gh,97.1,40,16
+EMP-0962,Nii Lante,Human Resources,People Operations,Active,2022-01-10,70200,nii.lante@columbus.co.gh,99.1,38,2
+EMP-0951,Adwoa Sarpong,Technology,Software Engineer,Active,2023-07-03,101000,adwoa.sarpong@columbus.co.gh,95.8,43,24
