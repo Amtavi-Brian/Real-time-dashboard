@@ -1,0 +1,23 @@
+"""Employee ORM model."""
+from sqlalchemy import Date, Float, ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.core.database import Base
+
+
+class Employee(Base):
+    __tablename__ = "employees"
+
+    id: Mapped[str] = mapped_column(String(20), primary_key=True)
+    name: Mapped[str] = mapped_column(String(120), nullable=False)
+    department_id: Mapped[str] = mapped_column(ForeignKey("departments.id"), nullable=False)
+    title: Mapped[str] = mapped_column(String(120), default="")
+    status: Mapped[str] = mapped_column(String(20), default="Active")
+    start_date: Mapped[str] = mapped_column(Date, nullable=False)
+    salary: Mapped[float] = mapped_column(Float, default=0)
+    email: Mapped[str] = mapped_column(String(160), unique=True, nullable=False)
+    attendance_rate: Mapped[float] = mapped_column(Float, default=0)
+    working_hours: Mapped[float] = mapped_column(Float, default=0)
+    overtime_hours: Mapped[float] = mapped_column(Float, default=0)
+
+    department = relationship("Department", back_populates="employees")
