@@ -1,0 +1,9 @@
+import { useState } from 'react'
+import { Save, SlidersHorizontal, UserRound } from 'lucide-react'
+
+export default function Settings() {
+  const [saved, setSaved] = useState(false)
+  const [thresholds, setThresholds] = useState({ attendance: 94, overtime: 25, absenteeism: 5 })
+  const update = (key, value) => { setThresholds((current) => ({ ...current, [key]: value })); setSaved(false) }
+  return <section className="page-stack"><div className="page-intro"><div><span className="eyebrow">WORKSPACE PREFERENCES</span><h2>Settings</h2><p>Manage your profile and organisation alert thresholds.</p></div></div><div className="settings-grid"><section className="panel settings-panel"><div className="section-title"><UserRound size={18} /><div><h3>Profile</h3><p>Your account details</p></div></div><label>Full name<input defaultValue="Jordan Mensah" /></label><label>Work email<input type="email" defaultValue="jordan.mensah@columbus.co.gh" /></label><label>Role<select defaultValue="Administrator"><option>Administrator</option><option>HR manager</option></select></label></section><section className="panel settings-panel"><div className="section-title"><SlidersHorizontal size={18} /><div><h3>Alert thresholds</h3><p>Notify when a metric crosses these limits.</p></div></div>{[['attendance', 'Minimum attendance rate', '%'], ['overtime', 'Overtime per employee', 'hrs'], ['absenteeism', 'Absenteeism rate', '%']].map(([key, label, unit]) => <label className="threshold-setting" key={key}>{label}<span><input type="number" value={thresholds[key]} onChange={(event) => update(key, event.target.value)} min="0" max="100" /><small>{unit}</small></span></label>)}<button className="primary-button" onClick={() => setSaved(true)}><Save size={16} />Save preferences</button>{saved && <p className="success-note" role="status">Preferences saved for this session.</p>}</section></div></section>
+}

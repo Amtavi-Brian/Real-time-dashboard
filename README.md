@@ -418,6 +418,10 @@ columbus-hr-dashboard/
 ├── README.md
 └── .gitignore
 
+## Frontend Setup
+
+The runnable React dashboard lives in [`frontend/`](frontend/). Follow [`frontend/README.md`](frontend/README.md) for installation, Vite environment variables, demo access, scripts, mock mode, and connecting to the FastAPI/WebSocket backend. Start it from that directory with `npm install && npm run dev`.
+
 
 📊 Dashboard KPIs
 

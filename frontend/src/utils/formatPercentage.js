@@ -1,0 +1,1 @@
+export default function formatPercentage(value, digits = 1) { return `${(Number(value) || 0).toFixed(digits)}%` }

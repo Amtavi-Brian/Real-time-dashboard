@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -109,3 +111,41 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+:root {
+  --page: #f3f5f2;
+  --panel: #ffffff;
+  --panel-muted: #f7f9f6;
+  --ink: #1c2b29;
+  --muted: #778581;
+  --border: #e3e9e5;
+  --green: #247f78;
+  --chart-grid: #e9eeeb;
+  --shadow-soft: 0 8px 24px rgba(33, 59, 51, 0.045);
+  color: var(--ink);
+  color-scheme: light;
+  background: var(--page);
+  font: 14px/1.45 'DM Sans', 'Avenir Next', 'Segoe UI', sans-serif;
+  letter-spacing: 0;
+}
+
+:root[data-theme='dark'] {
+  --page: #141d1c;
+  --panel: #1c2927;
+  --panel-muted: #202f2c;
+  --ink: #edf4f0;
+  --muted: #9baaa4;
+  --border: #34433f;
+  --green: #6ab7a7;
+  --chart-grid: #354540;
+  --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.12);
+  color-scheme: dark;
+}
+
+body { margin: 0; min-width: 320px; color: var(--ink); background: var(--page); }
+#root { width: 100%; max-width: none; min-height: 100svh; margin: 0; text-align: left; border: 0; display: block; }
+h1, h2, h3, p { margin-top: 0; }
+h1, h2, h3 { color: var(--ink); font-family: 'DM Sans', 'Avenir Next', 'Segoe UI', sans-serif; letter-spacing: 0; }
+button, input, select { font: inherit; }
+button { color: inherit; }
+::selection { color: #fff; background: #247f78; }

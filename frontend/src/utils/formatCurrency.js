@@ -1,0 +1,2 @@
+const currencyFormatter = new Intl.NumberFormat('en-GH', { style: 'currency', currency: 'GHS', maximumFractionDigits: 0 })
+export default function formatCurrency(value) { return currencyFormatter.format(Number(value) || 0) }

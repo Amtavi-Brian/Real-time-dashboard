@@ -1,122 +1,57 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+import { lazy, Suspense } from 'react'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { AuthProvider, useAuth } from './context/AuthContext.jsx'
+import { DashboardProvider } from './context/DashboardContext.jsx'
+import DashboardLayout from './components/layout/DashboardLayout.jsx'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+const Login = lazy(() => import('./pages/Login.jsx'))
+const Dashboard = lazy(() => import('./pages/Dashboard.jsx'))
+const Employees = lazy(() => import('./pages/Employees.jsx'))
+const Attendance = lazy(() => import('./pages/Attendance.jsx'))
+const Overtime = lazy(() => import('./pages/Overtime.jsx'))
+const Leave = lazy(() => import('./pages/Leave.jsx'))
+const Payroll = lazy(() => import('./pages/Payroll.jsx'))
+const Departments = lazy(() => import('./pages/Departments.jsx'))
+const Analytics = lazy(() => import('./pages/Analytics.jsx'))
+const Reports = lazy(() => import('./pages/Reports.jsx'))
+const Alerts = lazy(() => import('./pages/Alerts.jsx'))
+const Settings = lazy(() => import('./pages/Settings.jsx'))
 
+function RouteGate({ children, roles }) {
+  const { user } = useAuth()
+  if (!user) return <Navigate to="/login" replace />
+  if (roles && !roles.includes(user.role)) return <Navigate to="/" replace />
+  return children
+}
+
+function AppRoutes() {
+  const { user } = useAuth()
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    <Suspense fallback={<div className="page-loading" role="status">Loading workspace…</div>}>
+      <Routes>
+        <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
+        <Route element={<RouteGate><DashboardLayout /></RouteGate>}>
+          <Route index element={<Dashboard />} />
+          <Route path="employees" element={<Employees />} />
+          <Route path="attendance" element={<Attendance />} />
+          <Route path="overtime" element={<Overtime />} />
+          <Route path="leave" element={<Leave />} />
+          <Route path="payroll" element={<Payroll />} />
+          <Route path="departments" element={<Departments />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="reports" element={<Reports />} />
+          <Route path="alerts" element={<Alerts />} />
+          <Route path="settings" element={<RouteGate roles={['ADMIN', 'HR_MANAGER']}><Settings /></RouteGate>} />
+        </Route>
+        <Route path="*" element={<Navigate to={user ? '/' : '/login'} replace />} />
+      </Routes>
+    </Suspense>
   )
+}
+
+function App() {
+  return <BrowserRouter><AuthProvider><DashboardProvider><AppRoutes /></DashboardProvider></AuthProvider></BrowserRouter>
 }
 
 export default App
