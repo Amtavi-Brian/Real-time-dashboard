@@ -35,6 +35,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "backend"))
 
 from app.core.database import Base, SessionLocal, engine  # noqa: E402
+from app.core.security import hash_password  # noqa: E402
 from app.models.alert import Alert  # noqa: E402
 from app.models.analytics import AttendanceTrendPoint, PayrollTrendPoint  # noqa: E402
 from app.models.attendance import AttendanceRecord  # noqa: E402
@@ -44,8 +45,15 @@ from app.models.leave import LeaveRequest  # noqa: E402
 from app.models.overtime import OvertimeRecord  # noqa: E402
 from app.models.payroll import PayrollRecord  # noqa: E402
 from app.models.time_wage_record import EmployeeMonthlyRecord  # noqa: E402
+from app.models.user import User  # noqa: E402
 
 DEFAULT_DATASET_PATH = Path(__file__).resolve().parent / "Columbus_HR_Time_Wage_Dataset.xlsx"
+
+DEMO_USERS = [
+    ("Jordan Mensah", "jordan.mensah@columbus.co.gh", "columbus-demo", "ADMIN"),
+    ("Ama Boateng", "ama.boateng@columbus.co.gh", "columbus-demo", "HR_MANAGER"),
+    ("Yaw Darko", "yaw.darko@columbus.co.gh", "columbus-demo", "MANAGER"),
+]
 
 EMPLOYEE_COLUMNS = [
     "employee_id", "employee_name", "department", "month", "working_days", "present_days",
@@ -259,10 +267,15 @@ def import_dataset(xlsx_path: Path) -> None:
         for alert in generate_alerts(list(departments_by_name.values())):
             db.add(alert)
 
+        if db.query(User).count() == 0:
+            for name, email, password, role in DEMO_USERS:
+                db.add(User(name=name, email=email, hashed_password=hash_password(password), role=role))
+
         db.commit()
 
         print(f"Imported {len(employees_df)} employees across {len(departments_df)} departments for {month_label}.")
         print(f"Company attendance rate: {company_attendance_rate}% | Alerts generated: {len(generate_alerts(list(departments_by_name.values())))}")
+        print("Demo login: jordan.mensah@columbus.co.gh / columbus-demo (ADMIN)")
     except Exception:
         db.rollback()
         raise
