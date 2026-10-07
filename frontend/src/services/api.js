@@ -111,7 +111,7 @@ const mockResponse = (data) => Promise.resolve({ data })
 const mockAccounts = {
   'jordan.mensah@columbus.co.gh': { name: 'Jordan Mensah', role: 'ADMIN' },
   'ama.osei@columbus.co.gh': { name: 'Amara Osei', role: 'HR_MANAGER' },
-  'kwame.mensah@columbus.co.gh': { name: 'Kwame Mensah', role: 'MANAGER' },
+  'kwame.mensah@columbus.co.gh': { name: 'Kwame Mensah', role: 'MANAGER', department: 'Technology' },
 }
 
 const mockGet = (path) => {
