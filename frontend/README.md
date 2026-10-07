@@ -11,7 +11,15 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite. Demo mode accepts the prefilled email and password on the sign-in page. Select `ADMIN`, `HR_MANAGER`, or `MANAGER` to check role-based navigation; Settings is available only to ADMIN and HR_MANAGER.
+Open the local URL printed by Vite. In mock mode, sign in with one of these accounts (password: `columbus-demo`):
+
+| Email | Assigned role |
+| --- | --- |
+| `jordan.mensah@columbus.co.gh` | `ADMIN` |
+| `ama.osei@columbus.co.gh` | `HR_MANAGER` |
+| `kwame.mensah@columbus.co.gh` | `MANAGER` |
+
+The role is assigned by authentication and cannot be selected on the login form. Settings is available only to ADMIN and HR_MANAGER.
 
 ## Environment
 

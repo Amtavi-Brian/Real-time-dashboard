@@ -108,6 +108,12 @@ http.interceptors.response.use((response) => response, (error) => {
 })
 
 const mockResponse = (data) => Promise.resolve({ data })
+const mockAccounts = {
+  'jordan.mensah@columbus.co.gh': { name: 'Jordan Mensah', role: 'ADMIN' },
+  'ama.osei@columbus.co.gh': { name: 'Amara Osei', role: 'HR_MANAGER' },
+  'kwame.mensah@columbus.co.gh': { name: 'Kwame Mensah', role: 'MANAGER' },
+}
+
 const mockGet = (path) => {
   if (path === API_CONTRACT.employees.list) return mockResponse({ items: MOCK_DATA.employees, total: MOCK_DATA.employees.length })
   if (path.startsWith('/employees/')) return mockResponse(MOCK_DATA.employees.find((employee) => employee.id === path.split('/').at(-1)))
@@ -124,7 +130,12 @@ const mockGet = (path) => {
 export const api = {
   get: (path, config) => USE_MOCK ? mockGet(path) : http.get(path, config),
   post: (path, data, config) => {
-    if (USE_MOCK && path === API_CONTRACT.auth.login) return mockResponse({ access_token: `demo-${Date.now()}`, user: { name: 'Jordan Mensah', email: data.email, role: data.role || 'ADMIN' } })
+    if (USE_MOCK && path === API_CONTRACT.auth.login) {
+      const email = data.email?.trim().toLowerCase()
+      const account = mockAccounts[email]
+      if (!account || data.password !== 'columbus-demo') return Promise.reject(new Error('Invalid demo credentials'))
+      return mockResponse({ access_token: `demo-${Date.now()}`, user: { ...account, email } })
+    }
     if (USE_MOCK) return mockResponse({ success: true, filters: data })
     return http.post(path, data, config)
   },
