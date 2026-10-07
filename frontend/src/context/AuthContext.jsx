@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { api, API_CONTRACT } from '../services/api.js'
 
 const AuthContext = createContext(null)
+const allowedRoles = new Set(['ADMIN', 'HR_MANAGER', 'MANAGER'])
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
@@ -15,6 +16,7 @@ export function AuthProvider({ children }) {
   }, [])
   const login = async (credentials) => {
     const { data } = await api.post(API_CONTRACT.auth.login, credentials)
+    if (!data.user || !allowedRoles.has(data.user.role)) throw new Error('The authenticated account has no supported role.')
     localStorage.setItem('columbus_token', data.access_token)
     localStorage.setItem('columbus_user', JSON.stringify(data.user))
     setUser(data.user)
