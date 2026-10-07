@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext.jsx'
 import { DashboardProvider } from './context/DashboardContext.jsx'
 import DashboardLayout from './components/layout/DashboardLayout.jsx'
+import { canAccessPath } from './utils/roleAccess.js'
 import './App.css'
 
 const Login = lazy(() => import('./pages/Login.jsx'))
@@ -18,10 +19,10 @@ const Reports = lazy(() => import('./pages/Reports.jsx'))
 const Alerts = lazy(() => import('./pages/Alerts.jsx'))
 const Settings = lazy(() => import('./pages/Settings.jsx'))
 
-function RouteGate({ children, roles }) {
+function RouteGate({ children, path }) {
   const { user } = useAuth()
   if (!user) return <Navigate to="/login" replace />
-  if (roles && !roles.includes(user.role)) return <Navigate to="/" replace />
+  if (path && !canAccessPath(user.role, path)) return <Navigate to="/" replace />
   return children
 }
 
@@ -32,17 +33,17 @@ function AppRoutes() {
       <Routes>
         <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
         <Route element={<RouteGate><DashboardLayout /></RouteGate>}>
-          <Route index element={<Dashboard />} />
-          <Route path="employees" element={<Employees />} />
-          <Route path="attendance" element={<Attendance />} />
-          <Route path="overtime" element={<Overtime />} />
-          <Route path="leave" element={<Leave />} />
-          <Route path="payroll" element={<Payroll />} />
-          <Route path="departments" element={<Departments />} />
-          <Route path="analytics" element={<Analytics />} />
-          <Route path="reports" element={<Reports />} />
-          <Route path="alerts" element={<Alerts />} />
-          <Route path="settings" element={<RouteGate roles={['ADMIN', 'HR_MANAGER']}><Settings /></RouteGate>} />
+          <Route index element={<RouteGate path="/"><Dashboard /></RouteGate>} />
+          <Route path="employees" element={<RouteGate path="/employees"><Employees /></RouteGate>} />
+          <Route path="attendance" element={<RouteGate path="/attendance"><Attendance /></RouteGate>} />
+          <Route path="overtime" element={<RouteGate path="/overtime"><Overtime /></RouteGate>} />
+          <Route path="leave" element={<RouteGate path="/leave"><Leave /></RouteGate>} />
+          <Route path="payroll" element={<RouteGate path="/payroll"><Payroll /></RouteGate>} />
+          <Route path="departments" element={<RouteGate path="/departments"><Departments /></RouteGate>} />
+          <Route path="analytics" element={<RouteGate path="/analytics"><Analytics /></RouteGate>} />
+          <Route path="reports" element={<RouteGate path="/reports"><Reports /></RouteGate>} />
+          <Route path="alerts" element={<RouteGate path="/alerts"><Alerts /></RouteGate>} />
+          <Route path="settings" element={<RouteGate path="/settings"><Settings /></RouteGate>} />
         </Route>
         <Route path="*" element={<Navigate to={user ? '/' : '/login'} replace />} />
       </Routes>
