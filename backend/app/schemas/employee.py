@@ -10,7 +10,7 @@ class EmployeeOut(BaseModel):
     department: str
     title: str
     status: str
-    startDate: date
+    startDate: date | None = None
     salary: float
     email: str
     attendanceRate: float

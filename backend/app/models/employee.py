@@ -13,7 +13,8 @@ class Employee(Base):
     department_id: Mapped[str] = mapped_column(ForeignKey("departments.id"), nullable=False)
     title: Mapped[str] = mapped_column(String(120), default="")
     status: Mapped[str] = mapped_column(String(20), default="Active")
-    start_date: Mapped[str] = mapped_column(Date, nullable=False)
+    # Nullable because the source HR dataset does not record a hire date.
+    start_date: Mapped[str | None] = mapped_column(Date, nullable=True)
     salary: Mapped[float] = mapped_column(Float, default=0)
     email: Mapped[str] = mapped_column(String(160), unique=True, nullable=False)
     attendance_rate: Mapped[float] = mapped_column(Float, default=0)
@@ -21,3 +22,4 @@ class Employee(Base):
     overtime_hours: Mapped[float] = mapped_column(Float, default=0)
 
     department = relationship("Department", back_populates="employees")
+    monthly_records = relationship("EmployeeMonthlyRecord", back_populates="employee", cascade="all, delete-orphan")

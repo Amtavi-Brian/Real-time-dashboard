@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import get_settings
 from app.core.database import Base, SessionLocal, engine
-from app.models import alert, analytics, attendance, department, employee, leave, overtime, payroll, user  # noqa: F401
+from app.models import alert, analytics, attendance, department, employee, leave, overtime, payroll, time_wage_record, user  # noqa: F401
 from app.routers import alerts, analytics as analytics_router, attendance as attendance_router, auth
 from app.routers import departments, employees, leave as leave_router, overtime as overtime_router, payroll as payroll_router, reports
 from app.services.analytics_service import get_analytics
