@@ -7,10 +7,9 @@ class Settings(BaseSettings):
     app_name: str = "Columbus HR Time & Wage Analytics API"
     environment: str = "development"
 
-    # Falls back to a local SQLite file so the API runs without a PostgreSQL
-    # server. Set DATABASE_URL (e.g. postgresql+psycopg://user:pass@host/db)
-    # to point at a real PostgreSQL instance in staging/production.
-    database_url: str = "sqlite:///./columbus_hr.db"
+    # PostgreSQL connection string. Override via the DATABASE_URL env var for
+    # a different host/user/password (e.g. in staging/production).
+    database_url: str = "postgresql+psycopg://columbus_app:columbus_app_pw@localhost:5432/columbus"
 
     secret_key: str = "columbus-dev-secret-change-me"
     algorithm: str = "HS256"
