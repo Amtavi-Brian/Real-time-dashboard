@@ -1,5 +1,4 @@
-# 🏢 Columbus Company Limited
-# Real-Time HR Time & Wage Analytics Dashboard
+# 🏢 Columbus Company Limited — Real-Time HR Time & Wage Analytics Dashboard
 
 > **From HR Data → Real-Time Insights → Better Decisions**
 
@@ -27,7 +26,81 @@ The system is designed around the hypothetical HR dataset provided for the Colum
 
 ---
 
-# 🎯 Project Objectives
+## 🚀 Getting Started (Local Development)
+
+This confirms the setup actually used and verified to connect the React frontend to the FastAPI backend.
+
+### Prerequisites
+
+- Python 3.11+ and a virtual environment (`backend/.venv`)
+- Node.js 18+ and npm
+- A running PostgreSQL instance with a `columbus` database
+
+### 1. Backend (FastAPI)
+
+```sh
+cd backend
+python -m venv .venv          # if not already created
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env          # set DATABASE_URL, SECRET_KEY, CORS_ORIGINS, etc.
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+- Health check: `GET http://127.0.0.1:8000/` → `{"status": "ok", ...}`
+- Interactive API docs: `http://127.0.0.1:8000/docs`
+- WebSocket dashboard feed: `ws://127.0.0.1:8000/ws/dashboard`
+
+### 2. Frontend (React + Vite)
+
+```sh
+cd frontend
+npm install
+cp .env.example .env    # see variables below
+npm run dev
+```
+
+Open the local URL printed by Vite (defaults to `http://localhost:5173`). See [`frontend/README.md`](frontend/README.md) for demo accounts, role-based access, and mock-mode details.
+
+### 3. Connecting the Frontend to the Backend
+
+Set these variables in `frontend/.env` so the dashboard talks to the FastAPI/WebSocket backend instead of mock data:
+
+| Variable | Value used locally | Purpose |
+| --- | --- | --- |
+| `VITE_USE_MOCK` | `false` | Disables mock data/simulated WebSocket and uses the real API |
+| `VITE_API_URL` | `http://127.0.0.1:8000` | Axios REST base URL — must match the port Uvicorn is running on |
+| `VITE_WS_URL` | `ws://127.0.0.1:8000/ws/dashboard` | WebSocket URL for real-time dashboard updates |
+
+> ⚠️ The backend and frontend ports must match. If Uvicorn is started with `--port 8000`, `VITE_API_URL`/`VITE_WS_URL` must also reference `8000` (not `8001` or any other port), or API calls and the WebSocket connection will fail silently/fall back to mock data.
+
+Also confirm `backend/.env` includes the frontend's origin in `CORS_ORIGINS`, e.g.:
+
+```text
+CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174,http://127.0.0.1:5174
+```
+
+### 4. Verifying the Connection
+
+```sh
+# REST API
+curl http://127.0.0.1:8000/employees
+
+# WebSocket (requires python + websockets package)
+python -c "
+import asyncio, websockets
+async def main():
+    async with websockets.connect('ws://127.0.0.1:8000/ws/dashboard') as ws:
+        print(await ws.recv())
+asyncio.run(main())
+"
+```
+
+A successful connection returns employee JSON data from the REST call and a `dashboard.update` message from the WebSocket within a few seconds. Then open `http://localhost:5173` in the browser and sign in with a demo account — the dashboard should show live data instead of mock data.
+
+---
+
+## 🎯 Project Objectives
 
 The main objective is to demonstrate how real-time HR analytics can support better workforce and wage management.
 
@@ -48,9 +121,9 @@ The main objective is to demonstrate how real-time HR analytics can support bett
 
 ---
 
-# 🚀 Key Features
+## 🚀 Key Features
 
-## 📊 Real-Time Dashboard
+### 📊 Real-Time Dashboard
 
 The main dashboard provides an overview of the organization's workforce.
 
@@ -69,7 +142,7 @@ It displays:
 
 ---
 
-## 👥 Employee Management
+### 👥 Employee Management
 
 HR administrators can:
 
@@ -83,7 +156,7 @@ HR administrators can:
 
 ---
 
-## 🕒 Attendance Management
+### 🕒 Attendance Management
 
 The system monitors employee attendance and working hours.
 
@@ -100,7 +173,7 @@ It provides:
 
 ---
 
-## ⏱️ Overtime Management
+### ⏱️ Overtime Management
 
 The system provides detailed overtime analytics.
 
@@ -116,7 +189,7 @@ HR managers can monitor:
 
 ---
 
-## 📅 Leave Management
+### 📅 Leave Management
 
 The system tracks employee leave.
 
@@ -132,7 +205,7 @@ It provides:
 
 ---
 
-## 💰 Payroll & Wage Analytics
+### 💰 Payroll & Wage Analytics
 
 The system provides wage and payroll analysis.
 
@@ -148,7 +221,7 @@ It monitors:
 
 ---
 
-## 🏢 Department Analytics
+### 🏢 Department Analytics
 
 Management can compare departments based on:
 
@@ -162,7 +235,7 @@ Management can compare departments based on:
 
 ---
 
-## 🚨 Alerts & Exceptions
+### 🚨 Alerts & Exceptions
 
 The dashboard automatically identifies HR issues.
 
@@ -183,11 +256,17 @@ Employee attendance is below the required threshold.
 
 📅 Leave Alert
 High leave utilization detected.
-⚡ Real-Time Architecture
+```
+
+---
+
+## ⚡ Real-Time Architecture
 
 The system uses WebSockets to provide real-time dashboard updates.
 
 The general data flow is:
+
+```text
              HR DATA
                 │
                 ▼
@@ -220,61 +299,73 @@ The general data flow is:
        └─────────┼──────────┘
                  ▼
         Management Insights
+```
 
-🛠️ Technology Stack
-Frontend
-Technology	Purpose
-React	User interface
-Vite	Frontend development/build tool
-Tailwind CSS	UI styling
-Recharts	Data visualization
-Axios	API communication
-React Router	Application navigation
-Backend
-Technology	Purpose
-FastAPI	REST API
-Python	Backend programming
-SQLAlchemy	Database ORM
-Pydantic	Data validation
-WebSockets	Real-time communication
-Pandas	HR data processing
-Database
+---
 
-PostgreSQL
+## 🛠️ Technology Stack
 
-Used to store:
+### Frontend
 
-Employees
-Departments
-Attendance
-Overtime
-Leave
-Payroll
-Alerts
-User accounts
-Authentication
+| Technology | Purpose |
+| --- | --- |
+| React | User interface |
+| Vite | Frontend development/build tool |
+| Tailwind CSS | UI styling |
+| Recharts | Data visualization |
+| Axios | API communication |
+| React Router | Application navigation |
+
+### Backend
+
+| Technology | Purpose |
+| --- | --- |
+| FastAPI | REST API |
+| Python | Backend programming |
+| SQLAlchemy | Database ORM |
+| Pydantic | Data validation |
+| WebSockets | Real-time communication |
+| Pandas | HR data processing |
+
+### Database
+
+**PostgreSQL** is used to store:
+
+- Employees
+- Departments
+- Attendance
+- Overtime
+- Leave
+- Payroll
+- Alerts
+- User accounts
+
+### Authentication
 
 The application uses:
 
-JWT authentication
-Role-based access control
-Secure password hashing
+- JWT authentication
+- Role-based access control
+- Secure password hashing
 
 Possible roles include:
 
-ADMIN
-HR_MANAGER
-MANAGER
+- `ADMIN`
+- `HR_MANAGER`
+- `MANAGER`
 
+---
+
+## 📂 Project Structure
+
+```text
 columbus-hr-dashboard/
 │
 ├── frontend/
-│   │
 │   ├── public/
 │   │   └── logo.png
 │   │
 │   ├── src/
-│   │   │
 │   │   ├── assets/
 │   │   │
 │   │   ├── components/
@@ -347,9 +438,7 @@ columbus-hr-dashboard/
 │   └── vite.config.js
 │
 ├── backend/
-│   │
 │   ├── app/
-│   │   │
 │   │   ├── core/
 │   │   │   ├── config.py
 │   │   │   ├── database.py
@@ -417,59 +506,67 @@ columbus-hr-dashboard/
 ├── docker-compose.yml
 ├── README.md
 └── .gitignore
+```
 
-## Frontend Setup
+---
 
-The runnable React dashboard lives in [`frontend/`](frontend/). Follow [`frontend/README.md`](frontend/README.md) for installation, Vite environment variables, demo access, scripts, mock mode, and connecting to the FastAPI/WebSocket backend. Start it from that directory with `npm install && npm run dev`.
-
-
-📊 Dashboard KPIs
+## 📊 Dashboard KPIs
 
 The main dashboard provides the following KPIs:
 
-KPI	Description
-Total Employees	Number of employees
-Attendance Rate	Percentage of expected attendance
-Absenteeism Rate	Percentage of employee absence
-Overtime Hours	Total recorded overtime
-Expected Gross Payroll	Expected employee wage cost
-Active Employees	Currently active employees
-Employees on Leave	Employees currently on approved leave
-Average Working Hours	Average employee working hours
-Average Overtime	Average overtime per employee
-Labour Cost	Total employee wage cost
-📈 Analytics
+| KPI | Description |
+| --- | --- |
+| Total Employees | Number of employees |
+| Attendance Rate | Percentage of expected attendance |
+| Absenteeism Rate | Percentage of employee absence |
+| Overtime Hours | Total recorded overtime |
+| Expected Gross Payroll | Expected employee wage cost |
+| Active Employees | Currently active employees |
+| Employees on Leave | Employees currently on approved leave |
+| Average Working Hours | Average employee working hours |
+| Average Overtime | Average overtime per employee |
+| Labour Cost | Total employee wage cost |
+
+---
+
+## 📈 Analytics
 
 The system provides several analytical visualizations.
 
-Attendance Analytics
-Attendance by department
-Attendance trends
-Employee attendance
-Absenteeism trends
-Overtime Analytics
-Overtime by department
-Overtime trends
-Overtime cost
-Average overtime per employee
-Payroll Analytics
-Basic wage cost
-Overtime cost
-Gross payroll
-Payroll variance
-Department labour cost
-Workforce Analytics
-Employee distribution
-Department size
-Active vs inactive employees
-Leave utilization
+**Attendance Analytics**
+- Attendance by department
+- Attendance trends
+- Employee attendance
+- Absenteeism trends
 
-employee_update
-📥 Data Import
+**Overtime Analytics**
+- Overtime by department
+- Overtime trends
+- Overtime cost
+- Average overtime per employee
+
+**Payroll Analytics**
+- Basic wage cost
+- Overtime cost
+- Gross payroll
+- Payroll variance
+- Department labour cost
+
+**Workforce Analytics**
+- Employee distribution
+- Department size
+- Active vs inactive employees
+- Leave utilization
+
+---
+
+## 📥 Data Import
 
 The system supports importing the hypothetical HR dataset from Excel or CSV.
 
-Data flow
+Data flow:
+
+```text
 Excel / CSV
      ↓
 Pandas
@@ -483,5 +580,6 @@ PostgreSQL
 FastAPI
      ↓
 React Dashboard
+```
 
-The data/ directory contains the initial dataset and database seeding utilities.
+The `data/` directory contains the initial dataset and database seeding utilities.
