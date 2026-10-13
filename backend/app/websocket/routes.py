@@ -15,4 +15,6 @@ async def dashboard_socket(websocket: WebSocket) -> None:
             # frames (e.g. pings) without acting on them.
             await websocket.receive_text()
     except WebSocketDisconnect:
+        pass
+    finally:
         await manager.disconnect(websocket)
