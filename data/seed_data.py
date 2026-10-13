@@ -26,6 +26,7 @@ from app.models.employee import Employee  # noqa: E402
 from app.models.leave import LeaveRequest  # noqa: E402
 from app.models.overtime import OvertimeRecord  # noqa: E402
 from app.models.payroll import PayrollRecord  # noqa: E402
+from app.models.time_wage_record import EmployeeMonthlyRecord  # noqa: E402, F401
 from app.models.user import User  # noqa: E402
 
 DEPARTMENTS = [
