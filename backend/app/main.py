@@ -1,5 +1,6 @@
 """FastAPI application entrypoint."""
 import asyncio
+import logging
 import math
 import time
 from contextlib import asynccontextmanager
@@ -18,6 +19,7 @@ from app.websocket.manager import dashboard_update_message, manager
 from app.websocket.routes import router as websocket_router
 
 settings = get_settings()
+logger = logging.getLogger(__name__)
 
 
 def _aggregate_metrics(db) -> dict:
@@ -46,6 +48,9 @@ async def _broadcast_loop() -> None:
             metrics = _aggregate_metrics(db)
             metrics["attendanceRate"] = round(metrics["attendanceRate"] + math.sin(tick) * 0.3, 1)
             charts = get_analytics(db, "attendance")
+        except Exception:  # noqa: BLE001 - keep the loop alive on transient DB errors
+            logger.exception("Dashboard broadcast tick failed")
+            continue
         finally:
             db.close()
         await manager.broadcast(dashboard_update_message(metrics, {"attendance": charts["attendance"]}))

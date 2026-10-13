@@ -183,6 +183,10 @@ Employee attendance is below the required threshold.
 
 📅 Leave Alert
 High leave utilization detected.
+```
+
+---
+
 ⚡ Real-Time Architecture
 
 The system uses WebSockets to provide real-time dashboard updates.
@@ -266,6 +270,7 @@ ADMIN
 HR_MANAGER
 MANAGER
 
+```text
 columbus-hr-dashboard/
 │
 ├── frontend/
@@ -399,24 +404,40 @@ columbus-hr-dashboard/
 │   │
 │   ├── tests/
 │   ├── requirements.txt
-│   └── .env
+│   └── .env.example
 │
 ├── data/
-│   ├── employee_data.xlsx
+│   ├── Columbus_HR_Time_Wage_Dataset.xlsx
 │   ├── employee_data.csv
+│   ├── import_dataset.py
 │   └── seed_data.py
 │
 ├── database/
-│   ├── migrations/
 │   └── schema.sql
 │
-├── docker/
-│   ├── Dockerfile.frontend
-│   └── Dockerfile.backend
-│
-├── docker-compose.yml
 ├── README.md
 └── .gitignore
+```
+
+## Backend Setup
+
+Requires Python 3.11+ and a running PostgreSQL database.
+
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+cp .env.example .env        # then set DATABASE_URL, SECRET_KEY, CORS_ORIGINS
+python ../data/seed_data.py          # demo data, or:
+python ../data/import_dataset.py     # import the Excel dataset
+
+uvicorn app.main:app --reload        # http://localhost:8000 (docs at /docs)
+pytest                               # run the tests (uses SQLite)
+```
+
+Key environment variables: `DATABASE_URL`, `SECRET_KEY`, `ACCESS_TOKEN_EXPIRE_MINUTES`, `CORS_ORIGINS`, `WS_BROADCAST_INTERVAL_SECONDS`. The live dashboard channel is `ws://localhost:8000/ws/dashboard`.
 
 ## Frontend Setup
 
@@ -464,7 +485,6 @@ Department size
 Active vs inactive employees
 Leave utilization
 
-employee_update
 📥 Data Import
 
 The system supports importing the hypothetical HR dataset from Excel or CSV.
